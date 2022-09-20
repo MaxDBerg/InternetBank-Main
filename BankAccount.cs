@@ -6,9 +6,12 @@ namespace InternetBank
 {
     internal class BankAccount
     {
+        private decimal balance { get; set; }
+        public decimal Balance { get { return balance; } }
 
-        private decimal balance = 0;
-
-
+        public BankAccount(decimal balance)
+        {
+            this.balance = balance;
+        }
     }
 }

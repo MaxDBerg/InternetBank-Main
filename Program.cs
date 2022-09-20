@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InternetBank;
+using System;
 
 namespace CampusVarberg___InternetBank4
 {
@@ -7,11 +8,20 @@ namespace CampusVarberg___InternetBank4
         static void Main(string[] args)
         {
             dynamic[] user = new dynamic[5];
+            dynamic[][] account = new dynamic[user.Length][];
             user[0] = new BankUser("Max", "1234", 3);
             user[1] = new BankUser("Anas", "1234", 1);
             user[2] = new BankUser("Tobias", "1234", 2);
             user[3] = new BankUser("Reidar", "1234", 5);
             user[4] = new BankUser("Kristian", "1234", 4);
+            for (int i = 0; i < user.Length; i++)
+            {
+                account[i] = new dynamic[user[i].AccountsPerUser];
+                for (int j = 0; j < user[i].AccountsPerUser; j++)
+                {
+                    account[i][j] = new BankAccount((j + 1) * user[i].AccountsPerUser * 10000);
+                }
+            }
 
             do
             {
@@ -31,14 +41,11 @@ namespace CampusVarberg___InternetBank4
                     switch (userMainMenuChoice)
                     {
                         case 1:
-                            foreach (var item in user)
+                            for (int i = 0; i < user.Length; i++)
                             {
-                                if (item.UserName == userLoggedIn)
+                                if (user[i].UserName == userLoggedIn)
                                 {
-                                    for (int i = 1; i < item.accountsPerUser; i++)
-                                    {
-                                        AccountsBalance(item);
-                                    }
+                                    AccountsBalance(user[i], account[i]);
                                 }
                             }
                             break;
@@ -94,9 +101,22 @@ namespace CampusVarberg___InternetBank4
             return "unknown";
         }
 
-        public static void AccountsBalance(dynamic[] accountOwner)
+        public static void AccountsBalance(dynamic accountOwner, dynamic[] userAccounts)
         {
-            
+            string[] accountNames = { "Lönekonto", "Sparkonto", "Sparkonto", "Sparkonto", "Sparkonto" };
+            int accNum = 0;
+
+            for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+            {
+                Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
+                accNum++;
+            }
         }
     }
 }
+
+//dynamic[] account = new dynamic[accountOwner.AccountsPerUser];
+//for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+//{
+//    account[i] = new BankAccount((i + 1) * accountOwner.AccountsPerUser * 10000);
+//}
