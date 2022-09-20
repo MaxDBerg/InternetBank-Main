@@ -8,11 +8,13 @@ namespace CampusVarberg___InternetBank4
     {
         public string UserName { get; set; }
         public string Password { get; set; }
+        public int AccountsPerUser { get; set; }
 
-        public BankUser(string userName, string password)
+        public BankUser(string userName, string password, int accountsPerUser)
         {
-            this.UserName = userName;
-            this.Password = password;
+            UserName = userName;
+            Password = password;
+            AccountsPerUser = accountsPerUser;
         }
 
 

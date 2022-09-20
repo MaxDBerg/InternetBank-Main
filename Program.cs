@@ -7,17 +7,18 @@ namespace CampusVarberg___InternetBank4
         static void Main(string[] args)
         {
             dynamic[] user = new dynamic[5];
-            user[0] = new BankUser("Max", "1234");
-            user[1] = new BankUser("Anas", "1234");
-            user[2] = new BankUser("Tobias", "1234");
-            user[3] = new BankUser("Reidar", "1234");
-            user[4] = new BankUser("Kristian", "1234");
+            user[0] = new BankUser("Max", "1234", 3);
+            user[1] = new BankUser("Anas", "1234", 1);
+            user[2] = new BankUser("Tobias", "1234", 2);
+            user[3] = new BankUser("Reidar", "1234", 5);
+            user[4] = new BankUser("Kristian", "1234", 4);
 
             do
             {
-                bool loggedIn = Login(user);
-
-                if (loggedIn == false)
+                string userLoggedIn = Login(user);
+                bool loggedIn = true;
+                
+                if (userLoggedIn == "unknown")
                 {
                     return;
                 }
@@ -29,7 +30,18 @@ namespace CampusVarberg___InternetBank4
 
                     switch (userMainMenuChoice)
                     {
-                        case 1: break;
+                        case 1:
+                            foreach (var item in user)
+                            {
+                                if (item.UserName == userLoggedIn)
+                                {
+                                    for (int i = 1; i < item.accountsPerUser; i++)
+                                    {
+                                        AccountsBalance(item);
+                                    }
+                                }
+                            }
+                            break;
 
                         case 2: break;
 
@@ -57,7 +69,7 @@ namespace CampusVarberg___InternetBank4
 
         }
 
-        public static bool Login(dynamic[] users)
+        public static string Login(dynamic[] users)
         {
             for (int i = 0; i < 3; i++)
             {
@@ -73,13 +85,18 @@ namespace CampusVarberg___InternetBank4
                     {
                         if (userInputPassword == item.Password)
                         {
-                            return true;
+                            return item.UserName;
                         }
                     }
                 }
                 Console.WriteLine("Incorrect Username or Password, Please try again: ");
             }
-            return false;
+            return "unknown";
+        }
+
+        public static void AccountsBalance(dynamic[] accountOwner)
+        {
+            
         }
     }
 }

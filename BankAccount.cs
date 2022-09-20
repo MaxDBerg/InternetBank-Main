@@ -6,5 +6,9 @@ namespace InternetBank
 {
     internal class BankAccount
     {
+
+        private decimal balance = 0;
+
+
     }
 }
