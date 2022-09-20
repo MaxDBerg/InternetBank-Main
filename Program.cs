@@ -120,3 +120,5 @@ namespace CampusVarberg___InternetBank4
 //{
 //    account[i] = new BankAccount((i + 1) * accountOwner.AccountsPerUser * 10000);
 //}
+
+// Nested Classes for accounts in BankUser
