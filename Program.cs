@@ -24,53 +24,7 @@ namespace CampusVarberg___InternetBank4
                 }
             }
 
-            do
-            {
-                string userLoggedIn = Login(user);
-                bool loggedIn = true;
-                
-                if (userLoggedIn == "unknown")
-                {
-                    return;
-                }
-
-                do
-                {
-                    Console.WriteLine("Du får nu fyra val \n1 - Se dina konton och saldo \n2 - Överföring mellan konton \n3 - Ta ut pengar \n4 - Logga ut");
-
-                    int userMenuChoice = 5;
-
-                    while (!int.TryParse(Console.ReadLine(), out userMenuChoice))
-                    {
-                        Console.WriteLine("Please input a Number: ");
-                    }
-                    
-                    switch (userMenuChoice)
-                    {
-                        case 1:
-                            for (int i = 0; i < user.Length; i++)
-                            {
-                                if (user[i].UserName == userLoggedIn)
-                                {
-                                    AccountsBalance(user[i], account[i]);
-                                }
-                            }
-                            break;
-
-                        case 2: break;
-
-                        case 3: break;
-
-                        case 4: loggedIn = false; break;
-
-                        default: Console.WriteLine("You have to input a number between 1 and 4"); break;
-                    }                    
-                    
-                    PressContinue(loggedIn);
-
-                } while (loggedIn == true);
-
-            } while (true);
+            MainMenu(user, account);
 
         }
 
@@ -99,18 +53,56 @@ namespace CampusVarberg___InternetBank4
             return "unknown";
         }
 
-        public static void AccountsBalance(dynamic accountOwner, dynamic[] userAccounts)
+        public static void MainMenu(dynamic[] user, dynamic[][] account)
         {
-            string[] accountNames = { "Lönekonto", "Sparkonto", "Sparkonto", "Sparkonto", "Sparkonto" };
-            int accNum = 0;
-
-            for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+            do
             {
-                Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
-                accNum++;
-            }
-        }
+                string userLoggedIn = Login(user);
+                bool loggedIn = true;
 
+                if (userLoggedIn == "unknown")
+                {
+                    return;
+                }
+
+                do
+                {
+                    Console.WriteLine("Du får nu fyra val \n1 - Se dina konton och saldo \n2 - Överföring mellan konton \n3 - Ta ut pengar \n4 - Logga ut");
+
+                    int userMenuChoice = 5;
+
+                    while (!int.TryParse(Console.ReadLine(), out userMenuChoice))
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+
+                    switch (userMenuChoice)
+                    {
+                        case 1:
+                            for (int i = 0; i < user.Length; i++)
+                            {
+                                if (user[i].UserName == userLoggedIn)
+                                {
+                                    AccountsBalance(user[i], account[i]);
+                                }
+                            }
+                            break;
+
+                        case 2: break;
+
+                        case 3: break;
+
+                        case 4: loggedIn = false; break;
+
+                        default: Console.WriteLine("You have to input a number between 1 and 4"); break;
+                    }
+
+                    PressContinue(loggedIn);
+
+                } while (loggedIn);
+
+            } while (true);
+        }
         public static void PressContinue(bool loggedIn)
         {
             if (loggedIn == true)
@@ -123,13 +115,16 @@ namespace CampusVarberg___InternetBank4
                 }
             }
         }
+        public static void AccountsBalance(dynamic accountOwner, dynamic[] userAccounts)
+        {
+            string[] accountNames = { "Lönekonto", "Sparkonto", "Sparkonto", "Sparkonto", "Sparkonto" };
+            int accNum = 0;
+
+            for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+            {
+                Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
+                accNum++;
+            }
+        }
     }
 }
-
-//dynamic[] account = new dynamic[accountOwner.AccountsPerUser];
-//for (int i = 0; i < accountOwner.AccountsPerUser; i++)
-//{
-//    account[i] = new BankAccount((i + 1) * accountOwner.AccountsPerUser * 10000);
-//}
-
-// Nested Classes for accounts in BankUser
