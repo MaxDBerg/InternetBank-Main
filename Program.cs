@@ -1,5 +1,6 @@
 ﻿using InternetBank;
 using System;
+using System.IO;
 
 namespace CampusVarberg___InternetBank4
 {
@@ -36,9 +37,15 @@ namespace CampusVarberg___InternetBank4
                 do
                 {
                     Console.WriteLine("Du får nu fyra val \n1 - Se dina konton och saldo \n2 - Överföring mellan konton \n3 - Ta ut pengar \n4 - Logga ut");
-                    int userMainMenuChoice = int.Parse(Console.ReadLine());
 
-                    switch (userMainMenuChoice)
+                    int userMenuChoice = 5;
+
+                    while (!int.TryParse(Console.ReadLine(), out userMenuChoice))
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+                    
+                    switch (userMenuChoice)
                     {
                         case 1:
                             for (int i = 0; i < user.Length; i++)
@@ -56,19 +63,10 @@ namespace CampusVarberg___InternetBank4
 
                         case 4: loggedIn = false; break;
 
-                        default: Console.WriteLine("User choice: Invalid"); break;
-
-                    }
-
-                    if (loggedIn == true)
-                    {
-                        Console.WriteLine("Klicka enter för att komma till huvudmenyn");
-                        ConsoleKey enterPressed = Console.ReadKey(true).Key;
-                        while (!Console.KeyAvailable && enterPressed != ConsoleKey.Enter)
-                        {
-                            enterPressed = Console.ReadKey(true).Key;
-                        }
-                    }
+                        default: Console.WriteLine("You have to input a number between 1 and 4"); break;
+                    }                    
+                    
+                    PressContinue(loggedIn);
 
                 } while (loggedIn == true);
 
@@ -110,6 +108,19 @@ namespace CampusVarberg___InternetBank4
             {
                 Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
                 accNum++;
+            }
+        }
+
+        public static void PressContinue(bool loggedIn)
+        {
+            if (loggedIn == true)
+            {
+                Console.WriteLine("Klicka enter för att komma till huvudmenyn");
+                ConsoleKey enterPressed = Console.ReadKey(true).Key;
+                while (!Console.KeyAvailable && enterPressed != ConsoleKey.Enter)
+                {
+                    enterPressed = Console.ReadKey(true).Key;
+                }
             }
         }
     }
