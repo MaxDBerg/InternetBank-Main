@@ -52,7 +52,6 @@ namespace CampusVarberg___InternetBank4
             }
             return "unknown";
         }
-
         public static void MainMenu(dynamic[] users, dynamic[][] accounts)
         {
             do
@@ -98,7 +97,15 @@ namespace CampusVarberg___InternetBank4
                             }
                             break;
 
-                        case 3: break;
+                        case 3:
+                            for (int i = 0; i < users.Length; i++)
+                            {
+                                if (users[i].UserName == userLoggedIn)
+                                {
+                                    WithdrawBalance(users[i], accounts[i]);
+                                }
+                            }
+                            break;
 
                         case 4: loggedIn = false; break;
 
@@ -162,7 +169,7 @@ namespace CampusVarberg___InternetBank4
             do
             {
                 Console.WriteLine("How much money do you want to transfer: ");
-                decimal amountMoney = int.Parse(Console.ReadLine());
+                decimal amountMoney = decimal.Parse(Console.ReadLine());
 
                 Console.WriteLine("Which account do you want to transfer {0}£ from?: ", amountMoney);
                 int transferFrom = InputNumberCheck(userAccounts) - 1;
@@ -172,7 +179,7 @@ namespace CampusVarberg___InternetBank4
 
                 transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
 
-                do
+                do //Remeber to make a yes or no method because you need to use it twice
                 {
                     if (transferCompleted != true)
                     {
@@ -205,7 +212,29 @@ namespace CampusVarberg___InternetBank4
             } while (userInputTryAgain);
 
         }
+        public static void WithdrawBalance(dynamic accountOwner, dynamic[] userAccounts)
+        {
+            bool withdrawelCompleted;
 
+            AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
+
+            Console.WriteLine("How much money do you want to withdraw?: ");
+            decimal amountMoney = int.Parse(Console.ReadLine());
+            
+            Console.WriteLine("From which account do you want to withdraw money from?: ");
+            int transferFrom = InputNumberCheck(userAccounts) - 1;
+            
+            withdrawelCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
+
+            if (withdrawelCompleted) //Remeber to make a yes or no method because you need to use it twice
+            {
+                AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
+            }
+            else
+            {
+                Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
+            }
+        }
         public static int InputNumberCheck(dynamic[] userAccounts)
         {
             int transfer;
