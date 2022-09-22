@@ -83,12 +83,20 @@ namespace CampusVarberg___InternetBank4
                             {
                                 if (user[i].UserName == userLoggedIn)
                                 {
-                                    AccountsBalance(user[i], account[i]);
+                                    AccountsBalance(user[i], account[i], 0);
                                 }
                             }
                             break;
 
-                        case 2: break;
+                        case 2:
+                            for (int i = 0; i < user.Length; i++)
+                            {
+                                if (user[i].UserName == userLoggedIn)
+                                {
+                                    MakeATransaction(user[i], account[i]);
+                                }
+                            }
+                            break;
 
                         case 3: break;
 
@@ -115,16 +123,70 @@ namespace CampusVarberg___InternetBank4
                 }
             }
         }
-        public static void AccountsBalance(dynamic accountOwner, dynamic[] userAccounts)
+        public static void AccountsBalance(dynamic accountOwner, dynamic[] userAccounts, int index)
         {
             string[] accountNames = { "Lönekonto", "Sparkonto", "Sparkonto", "Sparkonto", "Sparkonto" };
             int accNum = 0;
 
-            for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+            if (index == 0)
             {
-                Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
-                accNum++;
+                for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+                {
+                    Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
+                    accNum++;
+                }
             }
+            else if (index > 1)
+            {
+                for (int i = 0; i < accountOwner.AccountsPerUser; i++)
+                {
+                    Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}\t--\t{i + 1}");
+                    accNum++;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Index out of range!");
+            }
+        }
+        public static void MakeATransaction(dynamic accountOwner, dynamic[] userAccounts)
+        {
+            
+            AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
+
+            Console.WriteLine("Which account do you want to transfer money from?");
+            int transferFrom = InputNumberCheck(userAccounts);
+           
+            Console.WriteLine("Which account do you wan to transfer money to?");
+            int transferTo = InputNumberCheck(userAccounts);
+
+
+
+        }
+
+        public static int InputNumberCheck(dynamic[] userAccounts)
+        {
+            int transfer;
+            bool transferGranted = false;
+            do
+            {
+                while (!int.TryParse(Console.ReadLine(), out transfer))
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
+
+                if (transfer < 1 || transfer > userAccounts.Length)
+                {
+                    Console.WriteLine("You have to input a number between 1 and {0}", userAccounts.Length);
+                }
+                else
+                {
+                    transferGranted = true;
+                    return transfer;
+                }
+            } while (transferGranted == false);
+
+            return transfer;
         }
     }
 }
