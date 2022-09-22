@@ -8,23 +8,23 @@ namespace CampusVarberg___InternetBank4
     {
         static void Main(string[] args)
         {
-            dynamic[] user = new dynamic[5];
-            dynamic[][] account = new dynamic[user.Length][];
-            user[0] = new BankUser("Max", "1234", 3);
-            user[1] = new BankUser("Anas", "1234", 1);
-            user[2] = new BankUser("Tobias", "1234", 2);
-            user[3] = new BankUser("Reidar", "1234", 5);
-            user[4] = new BankUser("Kristian", "1234", 4);
-            for (int i = 0; i < user.Length; i++)
+            dynamic[] users = new dynamic[5];
+            dynamic[][] accounts = new dynamic[users.Length][];
+            users[0] = new BankUser("Max", "1234", 3);
+            users[1] = new BankUser("Anas", "1234", 1);
+            users[2] = new BankUser("Tobias", "1234", 2);
+            users[3] = new BankUser("Reidar", "1234", 5);
+            users[4] = new BankUser("Kristian", "1234", 4);
+            for (int i = 0; i < users.Length; i++)
             {
-                account[i] = new dynamic[user[i].AccountsPerUser];
-                for (int j = 0; j < user[i].AccountsPerUser; j++)
+                accounts[i] = new dynamic[users[i].AccountsPerUser];
+                for (int j = 0; j < users[i].AccountsPerUser; j++)
                 {
-                    account[i][j] = new BankAccount((j + 1) * user[i].AccountsPerUser * 10000);
+                    accounts[i][j] = new BankAccount((j + 1) * users[i].AccountsPerUser * 1000);
                 }
             }
 
-            MainMenu(user, account);
+            MainMenu(users, accounts);
 
         }
 
@@ -53,11 +53,11 @@ namespace CampusVarberg___InternetBank4
             return "unknown";
         }
 
-        public static void MainMenu(dynamic[] user, dynamic[][] account)
+        public static void MainMenu(dynamic[] users, dynamic[][] accounts)
         {
             do
             {
-                string userLoggedIn = Login(user);
+                string userLoggedIn = Login(users);
                 bool loggedIn = true;
 
                 if (userLoggedIn == "unknown")
@@ -79,21 +79,21 @@ namespace CampusVarberg___InternetBank4
                     switch (userMenuChoice)
                     {
                         case 1:
-                            for (int i = 0; i < user.Length; i++)
+                            for (int i = 0; i < users.Length; i++)
                             {
-                                if (user[i].UserName == userLoggedIn)
+                                if (users[i].UserName == userLoggedIn)
                                 {
-                                    AccountsBalance(user[i], account[i], 0);
+                                    AccountsBalance(users[i], accounts[i], 0);
                                 }
                             }
                             break;
 
                         case 2:
-                            for (int i = 0; i < user.Length; i++)
+                            for (int i = 0; i < users.Length; i++)
                             {
-                                if (user[i].UserName == userLoggedIn)
+                                if (users[i].UserName == userLoggedIn)
                                 {
-                                    MakeATransaction(user[i], account[i]);
+                                    MakeATransaction(users[i], accounts[i]);
                                 }
                             }
                             break;
@@ -151,16 +151,58 @@ namespace CampusVarberg___InternetBank4
         }
         public static void MakeATransaction(dynamic accountOwner, dynamic[] userAccounts)
         {
-            
+            bool transferCompleted;
+            char userInputYesOrNo;
+            bool userInputTryAgain = false;
+            bool userInputYesOrNoFailed = false;
+
+
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
 
-            Console.WriteLine("Which account do you want to transfer money from?");
-            int transferFrom = InputNumberCheck(userAccounts);
-           
-            Console.WriteLine("Which account do you wan to transfer money to?");
-            int transferTo = InputNumberCheck(userAccounts);
+            do
+            {
+                Console.WriteLine("How much money do you want to transfer: ");
+                decimal amountMoney = int.Parse(Console.ReadLine());
 
+                Console.WriteLine("Which account do you want to transfer {0}£ from?: ", amountMoney);
+                int transferFrom = InputNumberCheck(userAccounts) - 1;
 
+                Console.WriteLine("Which account do you want to transfer {0}£ to?: ", amountMoney);
+                int transferTo = InputNumberCheck(userAccounts) - 1;
+
+                transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
+
+                do
+                {
+                    if (transferCompleted != true)
+                    {
+                        Console.WriteLine("Do you want to try again? Yes - y, No - n: ");
+
+                        while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo))
+                        {
+                            Console.WriteLine("Please input 'y' for Yes or 'n' for No: ");
+                        }
+
+                        switch (userInputYesOrNo)
+                        {
+                            case 'y': userInputTryAgain = true; break;
+
+                            case 'n': break;
+
+                            default: Console.WriteLine("Please input 'y' for Yes or 'n' for No: "); userInputYesOrNoFailed = true; break;
+                        }
+
+                    }
+                    else
+                    {
+                        userAccounts[transferTo].MakeADeposit(amountMoney);
+                        
+                        AccountsBalance(accountOwner, userAccounts, 0);
+
+                    }
+                } while (userInputYesOrNoFailed);
+
+            } while (userInputTryAgain);
 
         }
 
