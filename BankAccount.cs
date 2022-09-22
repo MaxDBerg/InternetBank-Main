@@ -20,26 +20,19 @@ namespace InternetBank
         //Methods
         public void MakeADeposit(decimal MoneyAdded)
         {
-            if (MoneyAdded < balance)
-            {
-                balance += MoneyAdded;
-            }
-            else
-            {
-                Console.WriteLine("Transaction Failed!");
-            }
+            balance += MoneyAdded;
         }
         public bool MakeAWithdrawel(decimal MoneyRemoved)
         {
-            if (MoneyRemoved < balance)
+            if (MoneyRemoved <= balance)
             {
-                balance += MoneyRemoved;
-                return MoneyRemoved > balance;
+                balance -= MoneyRemoved;
+                return true;
             }
             else
             {
                 Console.WriteLine("Transaction Failed!");
-                return MoneyRemoved < balance;
+                return false;
             }
 
         }
