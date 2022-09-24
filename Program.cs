@@ -165,7 +165,7 @@ namespace CampusVarberg___InternetBank4
             do
             {
                 Console.WriteLine("How much money do you want to transfer?: ");
-                while (decimal.TryParse(Console.ReadLine(), out amountMoney))
+                while (!decimal.TryParse(Console.ReadLine(), out amountMoney))
                 {
                     Console.WriteLine("Please input a Number: ");
                 }
@@ -200,7 +200,7 @@ namespace CampusVarberg___InternetBank4
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
 
             Console.WriteLine("How much money do you want to withdraw?: ");
-            while (decimal.TryParse(Console.ReadLine(), out amountMoney))
+            while (!decimal.TryParse(Console.ReadLine(), out amountMoney))
             {
                 Console.WriteLine("Please input a Number: ");
             }
@@ -208,19 +208,29 @@ namespace CampusVarberg___InternetBank4
             Console.WriteLine("From which account do you want to withdraw money from?: ");
             int transferFrom = InputNumberCheck(userAccounts) - 1;
 
-            withdrawelCompleted = FailedTransaction(userAccounts, transferFrom, amountMoney);
+            Console.WriteLine("Input Password to proceed with the withdrawel: ");
+            string userInputPassword = Console.ReadLine();
 
-            do
+            if (userInputPassword == accountOwner.Password)
             {
-                if (withdrawelCompleted)
+                withdrawelCompleted = FailedTransaction(userAccounts, transferFrom, amountMoney);
+
+                do
                 {
-                    AccountsBalance(accountOwner, userAccounts, 0);
-                }
-                else
-                {
-                    Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
-                }
-            } while (!withdrawelCompleted);
+                    if (withdrawelCompleted)
+                    {
+                        AccountsBalance(accountOwner, userAccounts, 0);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
+                    }
+                } while (!withdrawelCompleted);
+            }
+            else
+            {
+                Console.WriteLine("Incorrect Password: Withdrawel was cancelled");
+            }
         }
         public static int InputNumberCheck(dynamic[] userAccounts)
         {
@@ -267,7 +277,7 @@ namespace CampusVarberg___InternetBank4
 
                     switch (userInputYesOrNo)
                     {
-                        case 'y': return true;
+                        case 'y': userInputTryAgain = true; break;
 
                         case 'n': return false;
 
@@ -275,7 +285,7 @@ namespace CampusVarberg___InternetBank4
                     }
 
                 }
-            } while (!userInputTryAgain);
+            } while (userInputTryAgain);
 
             return true;
         }
