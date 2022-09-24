@@ -158,56 +158,36 @@ namespace CampusVarberg___InternetBank4
         }
         public static void MakeATransaction(dynamic accountOwner, dynamic[] userAccounts)
         {
-            bool transferCompleted;
-            char userInputYesOrNo;
-            bool userInputTryAgain = false;
-            bool userInputYesOrNoFailed = false;
-
-
+            bool userInputTryAgain;
+            decimal amountMoney;
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
 
             do
             {
-                Console.WriteLine("How much money do you want to transfer: ");
-                decimal amountMoney = decimal.Parse(Console.ReadLine());
+                Console.WriteLine("How much money do you want to transfer?: ");
+                while (decimal.TryParse(Console.ReadLine(), out amountMoney))
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
 
-                Console.WriteLine("Which account do you want to transfer {0}£ from?: ", amountMoney);
+                Console.WriteLine("From which account do you want to transfer money from?: ");
                 int transferFrom = InputNumberCheck(userAccounts) - 1;
 
-                Console.WriteLine("Which account do you want to transfer {0}£ to?: ", amountMoney);
+                Console.WriteLine("From which account do you want to transfer money to?: ");
                 int transferTo = InputNumberCheck(userAccounts) - 1;
 
-                transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
+                userInputTryAgain = FailedTransaction(userAccounts, transferFrom, amountMoney);
 
-                do //Remeber to make a yes or no method because you need to use it twice
+                if (userInputTryAgain == true)
                 {
-                    if (transferCompleted != true)
-                    {
-                        Console.WriteLine("Do you want to try again? Yes - y, No - n: ");
+                    userAccounts[transferTo].MakeADeposit(amountMoney);
 
-                        while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo))
-                        {
-                            Console.WriteLine("Please input 'y' for Yes or 'n' for No: ");
-                        }
-
-                        switch (userInputYesOrNo)
-                        {
-                            case 'y': userInputTryAgain = true; break;
-
-                            case 'n': break;
-
-                            default: Console.WriteLine("Please input 'y' for Yes or 'n' for No: "); userInputYesOrNoFailed = true; break;
-                        }
-
-                    }
-                    else
-                    {
-                        userAccounts[transferTo].MakeADeposit(amountMoney);
-                        
-                        AccountsBalance(accountOwner, userAccounts, 0);
-
-                    }
-                } while (userInputYesOrNoFailed);
+                    AccountsBalance(accountOwner, userAccounts, 0);
+                }
+                else
+                {
+                    Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
+                }
 
             } while (userInputTryAgain);
 
@@ -215,25 +195,32 @@ namespace CampusVarberg___InternetBank4
         public static void WithdrawBalance(dynamic accountOwner, dynamic[] userAccounts)
         {
             bool withdrawelCompleted;
+            decimal amountMoney;
 
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
 
             Console.WriteLine("How much money do you want to withdraw?: ");
-            decimal amountMoney = int.Parse(Console.ReadLine());
-            
+            while (decimal.TryParse(Console.ReadLine(), out amountMoney))
+            {
+                Console.WriteLine("Please input a Number: ");
+            }
+
             Console.WriteLine("From which account do you want to withdraw money from?: ");
             int transferFrom = InputNumberCheck(userAccounts) - 1;
-            
-            withdrawelCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
 
-            if (withdrawelCompleted) //Remeber to make a yes or no method because you need to use it twice
+            withdrawelCompleted = FailedTransaction(userAccounts, transferFrom, amountMoney);
+
+            do
             {
-                AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
-            }
-            else
-            {
-                Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
-            }
+                if (withdrawelCompleted)
+                {
+                    AccountsBalance(accountOwner, userAccounts, 0);
+                }
+                else
+                {
+                    Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
+                }
+            } while (!withdrawelCompleted);
         }
         public static int InputNumberCheck(dynamic[] userAccounts)
         {
@@ -258,6 +245,39 @@ namespace CampusVarberg___InternetBank4
             } while (transferGranted == false);
 
             return transfer;
+        }
+        public static bool FailedTransaction(dynamic[] userAccounts, int transferFrom, decimal amountMoney)
+        {
+            bool transferCompleted;
+            bool userInputTryAgain = false;
+            char userInputYesOrNo;
+
+            transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
+
+            do //Remeber to make a yes or no method because you need to use it twice
+            {
+                if (transferCompleted != true)
+                {
+                    Console.WriteLine("Do you want to try again? Yes - y, No - n: ");
+
+                    while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo))
+                    {
+                        Console.WriteLine("Please input 'y' for Yes or 'n' for No: ");
+                    }
+
+                    switch (userInputYesOrNo)
+                    {
+                        case 'y': return true;
+
+                        case 'n': return false;
+
+                        default: Console.WriteLine("Please input 'y' for Yes or 'n' for No: "); userInputTryAgain = true; break;
+                    }
+
+                }
+            } while (!userInputTryAgain);
+
+            return true;
         }
     }
 }
