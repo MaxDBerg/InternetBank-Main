@@ -8,29 +8,29 @@ namespace CampusVarberg___InternetBank4
     {
         static void Main(string[] args)
         {
-            dynamic[] users = new dynamic[5];
-            dynamic[][] accounts = new dynamic[users.Length][];
-            users[0] = new BankUser("Max", "1234", 3);
+            BankUser[] users = new BankUser[5]; //creates an array for storing objects
+            BankAccount[][] accounts = new BankAccount[users.Length][];//creates a jagged array for storing objects
+            users[0] = new BankUser("Max", "1234", 3); //creates instances of the class BankUser i.e an Object
             users[1] = new BankUser("Anas", "1234", 1);
             users[2] = new BankUser("Tobias", "1234", 2);
             users[3] = new BankUser("Reidar", "1234", 5);
             users[4] = new BankUser("Kristian", "1234", 4);
-            for (int i = 0; i < users.Length; i++)
+            for (int i = 0; i < users.Length; i++) //Generates all the accounts for all the users
             {
-                accounts[i] = new dynamic[users[i].AccountsPerUser];
+                accounts[i] = new BankAccount[users[i].AccountsPerUser];
                 for (int j = 0; j < users[i].AccountsPerUser; j++)
                 {
-                    accounts[i][j] = new BankAccount((j + 1) * users[i].AccountsPerUser * 1000);
+                    accounts[i][j] = new BankAccount((j + 1) * users[i].AccountsPerUser * 1000); //Creates the object and generates the value to be stored in "BankUser.Balance"
                 }
             }
 
-            MainMenu(users, accounts);
+            MainMenu(users, accounts); //Calls on the method MainMenu() and gives all the users and accounts as parameters
 
         }
 
-        public static string Login(dynamic[] users)
+        public static string Login(BankUser[] users)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++) //The system gives you 3 chances to log in before the program terminates
             {
                 Console.WriteLine("Input Username");
                 string userInputUsername = Console.ReadLine();
@@ -38,13 +38,13 @@ namespace CampusVarberg___InternetBank4
                 Console.WriteLine("Input Password");
                 string userInputPassword = Console.ReadLine();
 
-                foreach (var item in users)
+                foreach (var item in users) //To compare the values stored in the array, I use this foreach loop to do that
                 {
-                    if (userInputUsername == item.UserName)
+                    if (userInputUsername == item.UserName) //Checks the Username
                     {
-                        if (userInputPassword == item.Password)
+                        if (userInputPassword == item.Password) //Checks the Password
                         {
-                            return item.UserName;
+                            return item.UserName; //Returns the Username
                         }
                     }
                 }
@@ -52,33 +52,39 @@ namespace CampusVarberg___InternetBank4
             }
             return "unknown";
         }
-        public static void MainMenu(dynamic[] users, dynamic[][] accounts)
+        public static void MainMenu(BankUser[] users, BankAccount[][] accounts)
         {
             do
             {
-                string userLoggedIn = Login(users);
+                //Log in
+                //----------------------------------------|
+                string userLoggedIn = Login(users); //Login() compares the user input to the information that is stored within the users[] array. If it matches the user logs in
                 bool loggedIn = true;
 
-                if (userLoggedIn == "unknown")
+                if (userLoggedIn == "unknown") //Checks whether or not the user is logged in
                 {
                     return;
                 }
 
+                //Main Menu
+                //----------------------------------------|
                 do
                 {
                     Console.WriteLine("Du får nu fyra val \n1 - Se dina konton och saldo \n2 - Överföring mellan konton \n3 - Ta ut pengar \n4 - Logga ut");
 
                     int userMenuChoice = 5;
 
-                    while (!int.TryParse(Console.ReadLine(), out userMenuChoice))
+                    while (!int.TryParse(Console.ReadLine(), out userMenuChoice)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "int"
                     {
                         Console.WriteLine("Please input a Number: ");
                     }
 
                     switch (userMenuChoice)
                     {
+                        //Balance
+                        //----------------------------------------|
                         case 1:
-                            for (int i = 0; i < users.Length; i++)
+                            for (int i = 0; i < users.Length; i++) //Determens what data to send the methods
                             {
                                 if (users[i].UserName == userLoggedIn)
                                 {
@@ -87,6 +93,8 @@ namespace CampusVarberg___InternetBank4
                             }
                             break;
 
+                        //Transaction
+                        //----------------------------------------|
                         case 2:
                             for (int i = 0; i < users.Length; i++)
                             {
@@ -97,6 +105,8 @@ namespace CampusVarberg___InternetBank4
                             }
                             break;
 
+                        //Withdraw
+                        //----------------------------------------|
                         case 3:
                             for (int i = 0; i < users.Length; i++)
                             {
@@ -112,7 +122,7 @@ namespace CampusVarberg___InternetBank4
                         default: Console.WriteLine("You have to input a number between 1 and 4"); break;
                     }
 
-                    PressContinue(loggedIn);
+                    PressContinue(loggedIn); //Forces the user to press enter if they want to get back to the Mainmenu
 
                 } while (loggedIn);
 
@@ -130,25 +140,22 @@ namespace CampusVarberg___InternetBank4
                 }
             }
         }
-        public static void AccountsBalance(dynamic accountOwner, dynamic[] userAccounts, int index)
+        public static void AccountsBalance(BankUser accountOwner, BankAccount[] userAccounts, int index)
         {
-            string[] accountNames = { "Lönekonto", "Sparkonto", "Sparkonto", "Sparkonto", "Sparkonto" };
-            int accNum = 0;
+            string[] accountNames = { "Lönekonto", "Sparkonto", "Sparkonto", "Sparkonto", "Sparkonto" }; //An array containing the names an account can have
 
-            if (index == 0)
+            if (index == 0) //Shows the user its accounts and the balance in each account
             {
                 for (int i = 0; i < accountOwner.AccountsPerUser; i++)
                 {
-                    Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}");
-                    accNum++;
+                    Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[i]} - Balance:\t{userAccounts[i].Balance}");
                 }
             }
-            else if (index > 1)
+            else if (index > 1) //The same as the one above but adds an index at the end
             {
                 for (int i = 0; i < accountOwner.AccountsPerUser; i++)
                 {
-                    Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[accNum]} - Balance:\t{userAccounts[i].Balance}\t--\t{i + 1}");
-                    accNum++;
+                    Console.WriteLine($"{accountOwner.UserName}'s Konton: \nKonto:\t{accountNames[i]} - Balance:\t{userAccounts[i].Balance}\t--\t{i + 1}");
                 }
             }
             else
@@ -156,126 +163,126 @@ namespace CampusVarberg___InternetBank4
                 Console.WriteLine("Index out of range!");
             }
         }
-        public static void MakeATransaction(dynamic accountOwner, dynamic[] userAccounts)
+        public static void MakeATransaction(BankUser accountOwner, BankAccount[] userAccounts)
         {
-            bool userInputTryAgain;
+            bool failedTransfer;
             decimal amountMoney;
-            AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
+            
+            //Transaction
+            //----------------------------------------|
+            AccountsBalance(accountOwner, userAccounts, userAccounts.Length); //Calls on the method AccountsBalance() with the index to show the user their options
 
             do
             {
                 Console.WriteLine("How much money do you want to transfer?: ");
-                while (!decimal.TryParse(Console.ReadLine(), out amountMoney))
-                {
+                while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //How much money is being transfered
+                { 
                     Console.WriteLine("Please input a Number: ");
                 }
 
                 Console.WriteLine("From which account do you want to transfer money from?: ");
-                int transferFrom = InputNumberCheck(userAccounts) - 1;
+                int transferFrom = InputNumberCheck(userAccounts) - 1; //From which account the money is being transferd from
 
                 Console.WriteLine("From which account do you want to transfer money to?: ");
-                int transferTo = InputNumberCheck(userAccounts) - 1;
+                int transferTo = InputNumberCheck(userAccounts) - 1; //To which account the money is being transferd to
 
-                userInputTryAgain = FailedTransaction(userAccounts, transferFrom, amountMoney);
+                failedTransfer = FailedTransaction(userAccounts, transferFrom, amountMoney); //Checks whether or not he transfer is possible: If the transfer is possible, it withdraws the money from the giving account and returns a bool 
 
-                if (userInputTryAgain == true)
+                if (failedTransfer) //Checks if the transfer failed
                 {
-                    userAccounts[transferTo].MakeADeposit(amountMoney);
+                    userAccounts[transferTo].MakeADeposit(amountMoney); //Makes the deposit
 
-                    AccountsBalance(accountOwner, userAccounts, 0);
+                    AccountsBalance(accountOwner, userAccounts, 0); //Shows the user, their accounts again
                 }
                 else
                 {
                     Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
                 }
 
-            } while (userInputTryAgain);
+            } while (failedTransfer);
 
         }
-        public static void WithdrawBalance(dynamic accountOwner, dynamic[] userAccounts)
+        public static void WithdrawBalance(BankUser accountOwner, BankAccount[] userAccounts)
         {
             bool withdrawelCompleted;
             decimal amountMoney;
 
+            //Withdrawel
+            //----------------------------------------|
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
 
             Console.WriteLine("How much money do you want to withdraw?: ");
-            while (!decimal.TryParse(Console.ReadLine(), out amountMoney))
+            while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "decimal"
             {
                 Console.WriteLine("Please input a Number: ");
             }
 
             Console.WriteLine("From which account do you want to withdraw money from?: ");
-            int transferFrom = InputNumberCheck(userAccounts) - 1;
+            int withdrawFrom = InputNumberCheck(userAccounts) - 1; //From which account the money is being withdrawn from
 
             Console.WriteLine("Input Password to proceed with the withdrawel: ");
-            string userInputPassword = Console.ReadLine();
+            string userInputPassword = Console.ReadLine(); //Asks the user for their credentials to validate the withdrawel
 
-            if (userInputPassword == accountOwner.Password)
+            if (userInputPassword == accountOwner.Password) //Checks if the password is valid
             {
-                withdrawelCompleted = FailedTransaction(userAccounts, transferFrom, amountMoney);
+                withdrawelCompleted = FailedTransaction(userAccounts, withdrawFrom, amountMoney); //Tries to withdraw the money and returns a bool for if it worked
 
-                do
+                if (withdrawelCompleted)
                 {
-                    if (withdrawelCompleted)
-                    {
-                        AccountsBalance(accountOwner, userAccounts, 0);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
-                    }
-                } while (!withdrawelCompleted);
+                    AccountsBalance(accountOwner, userAccounts, 0); //If it worked, we write the balance sheet to the user
+                }
+                else
+                {
+                    Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", withdrawFrom, userAccounts[withdrawFrom].Balance);
+                }
             }
             else
             {
                 Console.WriteLine("Incorrect Password: Withdrawel was cancelled");
             }
         }
-        public static int InputNumberCheck(dynamic[] userAccounts)
+        public static int InputNumberCheck(BankAccount[] userAccounts)
         {
             int transfer;
-            bool transferGranted = false;
-            do
+            do //Tries to get numerical input from the user
             {
-                while (!int.TryParse(Console.ReadLine(), out transfer))
+                while (!int.TryParse(Console.ReadLine(), out transfer)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "decimal"
                 {
                     Console.WriteLine("Please input a Number: ");
                 }
 
-                if (transfer < 1 || transfer > userAccounts.Length)
+                if (transfer < 1 || transfer > userAccounts.Length) //Checks if the user input is within the range given
                 {
                     Console.WriteLine("You have to input a number between 1 and {0}", userAccounts.Length);
                 }
                 else
                 {
-                    transferGranted = true;
                     return transfer;
                 }
-            } while (transferGranted == false);
+            } while (false);
 
             return transfer;
         }
-        public static bool FailedTransaction(dynamic[] userAccounts, int transferFrom, decimal amountMoney)
+        public static bool FailedTransaction(BankAccount[] userAccounts, int transferFrom, decimal amountMoney)
         {
             bool transferCompleted;
             bool userInputTryAgain = false;
             char userInputYesOrNo;
 
-            transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney);
+            transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney); //Tries to withdraw money from the specified account
 
-            do //Remeber to make a yes or no method because you need to use it twice
+            do// If it fails I ask the user if they want to try again
             {
-                if (transferCompleted != true)
+                if (!transferCompleted)
                 {
                     Console.WriteLine("Do you want to try again? Yes - y, No - n: ");
 
-                    while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo))
+                    while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "char"
                     {
                         Console.WriteLine("Please input 'y' for Yes or 'n' for No: ");
                     }
 
-                    switch (userInputYesOrNo)
+                    switch (Char.ToLower(userInputYesOrNo)) //Checks the user input
                     {
                         case 'y': userInputTryAgain = true; break;
 
@@ -283,10 +290,8 @@ namespace CampusVarberg___InternetBank4
 
                         default: Console.WriteLine("Please input 'y' for Yes or 'n' for No: "); userInputTryAgain = true; break;
                     }
-
                 }
             } while (userInputTryAgain);
-
             return true;
         }
     }
