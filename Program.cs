@@ -172,35 +172,30 @@ namespace CampusVarberg___InternetBank4
             //----------------------------------------|
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length); //Calls on the method AccountsBalance() with the index to show the user their options
 
-            do
+            Console.WriteLine("How much money do you want to transfer?: ");
+            while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //How much money is being transferred
+            { 
+                Console.WriteLine("Please input a Number: ");
+            }
+
+            Console.WriteLine("From which account do you want to transfer money from?: ");
+            int transferFrom = InputNumberCheck(userAccounts) - 1; //From which account the money is being transferred from
+
+            Console.WriteLine("From which account do you want to transfer money to?: ");
+            int transferTo = InputNumberCheck(userAccounts) - 1; //To which account the money is being transferred to
+
+            failedTransfer = FailedTransaction(userAccounts, transferFrom, amountMoney); //Checks whether or not he transfer is possible: If the transfer is possible, it withdraws the money from the giving account and returns a bool 
+
+            if (failedTransfer) //Checks if the transfer failed
             {
-                Console.WriteLine("How much money do you want to transfer?: ");
-                while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //How much money is being transfered
-                { 
-                    Console.WriteLine("Please input a Number: ");
-                }
+                userAccounts[transferTo].MakeADeposit(amountMoney); //Makes the deposit
 
-                Console.WriteLine("From which account do you want to transfer money from?: ");
-                int transferFrom = InputNumberCheck(userAccounts) - 1; //From which account the money is being transferd from
-
-                Console.WriteLine("From which account do you want to transfer money to?: ");
-                int transferTo = InputNumberCheck(userAccounts) - 1; //To which account the money is being transferd to
-
-                failedTransfer = FailedTransaction(userAccounts, transferFrom, amountMoney); //Checks whether or not he transfer is possible: If the transfer is possible, it withdraws the money from the giving account and returns a bool 
-
-                if (failedTransfer) //Checks if the transfer failed
-                {
-                    userAccounts[transferTo].MakeADeposit(amountMoney); //Makes the deposit
-
-                    AccountsBalance(accountOwner, userAccounts, 0); //Shows the user, their accounts again
-                }
-                else
-                {
-                    Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
-                }
-
-            } while (failedTransfer);
-
+                AccountsBalance(accountOwner, userAccounts, 0); //Shows the user, their accounts again
+            }
+            else
+            {
+                Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
+            }
         }
         public static void WithdrawBalance(BankUser accountOwner, BankAccount[] userAccounts)
         {
@@ -286,13 +281,13 @@ namespace CampusVarberg___InternetBank4
                     {
                         case 'y': userInputTryAgain = true; break;
 
-                        case 'n': return false;
+                        case 'n': userInputTryAgain = false; break;
 
                         default: Console.WriteLine("Please input 'y' for Yes or 'n' for No: "); userInputTryAgain = true; break;
                     }
                 }
             } while (userInputTryAgain);
-            return true;
+        return transferCompleted;
         }
     }
 }
