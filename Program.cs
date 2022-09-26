@@ -1,8 +1,6 @@
-﻿using InternetBank;
-using System;
-using System.IO;
+﻿using System;
 
-namespace CampusVarberg___InternetBank4
+namespace InternetBank
 {
     internal class Program
     {

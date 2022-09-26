@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CampusVarberg___InternetBank4
+namespace InternetBank
 {
     internal class BankUser
     {
