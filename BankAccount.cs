@@ -8,8 +8,8 @@ namespace InternetBank
     {   
 
         //Fields
-        private decimal balance { get; set; }
-        public decimal Balance { get { return balance; } }
+        private decimal balance { get; set; } //Can only be accessed from within the class
+        public decimal Balance { get { return balance; } } // lets us read the balance variable outside the class 
 
         //Constructors
         public BankAccount(decimal balance)
@@ -18,13 +18,13 @@ namespace InternetBank
         }
 
         //Methods
-        public void MakeADeposit(decimal MoneyAdded)
+        public void MakeADeposit(decimal MoneyAdded) //Makes the deposit
         {
             balance += MoneyAdded;
         }
-        public bool MakeAWithdrawel(decimal MoneyRemoved)
+        public bool MakeAWithdrawel(decimal MoneyRemoved) //Makes the withdrawel
         {
-            if (MoneyRemoved <= balance)
+            if (MoneyRemoved <= balance) //If the money we want to remove is larger then the money in the account, we return false
             {
                 balance -= MoneyRemoved;
                 return true;
