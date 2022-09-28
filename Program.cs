@@ -7,16 +7,8 @@ namespace InternetBank
         static void Main(string[] args)
         {
             GenerateUsers(out BankUser[] users);
-
-            BankAccount[][] accounts = new BankAccount[users.Length][];//creates a jagged array for storing objects
-            for (int i = 0; i < users.Length; i++) //Generates all the accounts for all the users
-            {
-                accounts[i] = new BankAccount[users[i].AccountsPerUser];
-                for (int j = 0; j < users[i].AccountsPerUser; j++)
-                {
-                    accounts[i][j] = new BankAccount((j + 1) * users[i].AccountsPerUser * 1000); //Creates the object and generates the value to be stored in "BankUser.Balance"
-                }
-            }
+            
+            GenerateAccounts(users, out BankAccount[][] accounts);
 
             MainMenu(users, accounts); //Calls on the method MainMenu() and gives all the users and accounts as parameters
 
@@ -31,6 +23,18 @@ namespace InternetBank
             users[2] = new BankUser("Tobias", "1234", 2);
             users[3] = new BankUser("Reidar", "1234", 5);
             users[4] = new BankUser("Kristian", "1234", 4);
+        }
+        static void GenerateAccounts(BankUser[] users, out BankAccount[][] accounts)
+        {
+            accounts = new BankAccount[users.Length][];//creates a jagged array for storing objects
+            for (int i = 0; i < users.Length; i++) //Generates all the accounts for all the users
+            {
+                accounts[i] = new BankAccount[users[i].AccountsPerUser];
+                for (int j = 0; j < users[i].AccountsPerUser; j++)
+                {
+                    accounts[i][j] = new BankAccount((j + 1) * users[i].AccountsPerUser * 1000); //Creates the object and generates the value to be stored in "BankUser.Balance"
+                }
+            }
         }
         public static string Login(BankUser[] users)
         {
