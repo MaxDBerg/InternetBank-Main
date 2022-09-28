@@ -6,13 +6,9 @@ namespace InternetBank
     {
         static void Main(string[] args)
         {
-            BankUser[] users = new BankUser[5]; //creates an array for storing objects
+            GenerateUsers(out BankUser[] users);
+
             BankAccount[][] accounts = new BankAccount[users.Length][];//creates a jagged array for storing objects
-            users[0] = new BankUser("Max", "1234", 3); //creates instances of the class BankUser i.e an Object
-            users[1] = new BankUser("Anas", "1234", 1);
-            users[2] = new BankUser("Tobias", "1234", 2);
-            users[3] = new BankUser("Reidar", "1234", 5);
-            users[4] = new BankUser("Kristian", "1234", 4);
             for (int i = 0; i < users.Length; i++) //Generates all the accounts for all the users
             {
                 accounts[i] = new BankAccount[users[i].AccountsPerUser];
@@ -26,6 +22,16 @@ namespace InternetBank
 
         }
 
+        static void GenerateUsers(out BankUser[] users)
+        {
+            users = new BankUser[5]; //creates an array for storing objects
+            BankAccount[][] accounts = new BankAccount[users.Length][];//creates a jagged array for storing objects
+            users[0] = new BankUser("Max", "1234", 3); //creates instances of the class BankUser i.e an Object
+            users[1] = new BankUser("Anas", "1234", 1);
+            users[2] = new BankUser("Tobias", "1234", 2);
+            users[3] = new BankUser("Reidar", "1234", 5);
+            users[4] = new BankUser("Kristian", "1234", 4);
+        }
         public static string Login(BankUser[] users)
         {
             for (int i = 0; i < 3; i++) //The system gives you 3 chances to log in before the program terminates
