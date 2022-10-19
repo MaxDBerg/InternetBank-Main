@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 
 namespace InternetBank
 {
@@ -19,7 +19,7 @@ namespace InternetBank
             users = new BankUser[5]; //creates an array for storing objects
             BankAccount[][] accounts = new BankAccount[users.Length][];//creates a jagged array for storing objects
             users[0] = new BankUser("Max", "1234", 3); //creates instances of the class BankUser i.e an Object
-            users[1] = new BankUser("Anas", "1234", 1);
+            users[1] = new BankUser("Anas", "1234", 3);
             users[2] = new BankUser("Tobias", "1234", 2);
             users[3] = new BankUser("Reidar", "1234", 5);
             users[4] = new BankUser("Kristian", "1234", 4);
@@ -67,6 +67,7 @@ namespace InternetBank
                 //Log in
                 //----------------------------------------|
                 string userLoggedIn = Login(users); //Login() compares the user input to the information that is stored within the users[] array. If it matches the user logs in
+                Console.Clear();
                 bool loggedIn = true;
 
                 if (userLoggedIn == "unknown") //Checks whether or not the user is logged in
@@ -147,6 +148,7 @@ namespace InternetBank
                     enterPressed = Console.ReadKey(true).Key;
                 }
             }
+            Console.Clear();
         }
         public static void AccountsBalance(BankUser accountOwner, BankAccount[] userAccounts, int index)
         {
@@ -174,23 +176,65 @@ namespace InternetBank
         public static void MakeATransaction(BankUser accountOwner, BankAccount[] userAccounts)
         {
             bool failedTransfer;
+            bool withdrawelOkay = false;
             decimal amountMoney;
+            int transferTo;
+            int transferFrom;
             
             //Transaction
             //----------------------------------------|
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length); //Calls on the method AccountsBalance() with the index to show the user their options
 
-            Console.WriteLine("How much money do you want to transfer?: ");
-            while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //How much money is being transferred
-            { 
-                Console.WriteLine("Please input a Number: ");
-            }
+            do
+            {
+                Console.WriteLine("How much money do you want to transfer?: ");
+                while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case a "decimal"
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
+                if (amountMoney > 0)
+                {
+                    withdrawelOkay = true;
+                }
+                else
+                {
+                    Console.WriteLine("The Money you transfer can not be lower or equal to 0");
+                }
+            } while (!withdrawelOkay);
 
-            Console.WriteLine("From which account do you want to transfer money from?: ");
-            int transferFrom = InputNumberCheck(userAccounts) - 1; //From which account the money is being transferred from
+            do
+            {
+                Console.WriteLine("From which account do you want to transfer money from?: ");
+                while (!int.TryParse(Console.ReadLine(), out transferFrom)) //From which account the money is being withdrawn from
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
+                if (transferFrom > 0 && transferFrom <= 3)
+                {
+                    withdrawelOkay = true;
+                }
+                else
+                {
+                    Console.WriteLine("Please input a number between 1 and 3");
+                }
+            } while (!withdrawelOkay); //From which account the money is being transferred from
 
-            Console.WriteLine("From which account do you want to transfer money to?: ");
-            int transferTo = InputNumberCheck(userAccounts) - 1; //To which account the money is being transferred to
+            do
+            {
+                Console.WriteLine("From which account do you want to transfer money to?: ");
+                while (!int.TryParse(Console.ReadLine(), out transferTo)) //From which account the money is being withdrawn from
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
+                if (transferTo > 0 && transferTo <= 3)
+                {
+                    withdrawelOkay = true;
+                }
+                else
+                {
+                    Console.WriteLine("Please input a number between 1 and 3");
+                }
+            } while (!withdrawelOkay); //To which account the money is being transferred to
 
             failedTransfer = FailedTransaction(userAccounts, transferFrom, amountMoney); //Checks whether or not he transfer is possible: If the transfer is possible, it withdraws the money from the giving account and returns a bool 
 
@@ -209,19 +253,48 @@ namespace InternetBank
         {
             bool withdrawelCompleted;
             decimal amountMoney;
+            int withdrawFrom;
+            bool withdrawelOkay = false;
 
             //Withdrawel
             //----------------------------------------|
             AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
 
-            Console.WriteLine("How much money do you want to withdraw?: ");
-            while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "decimal"
+            do
             {
-                Console.WriteLine("Please input a Number: ");
-            }
-
-            Console.WriteLine("From which account do you want to withdraw money from?: ");
-            int withdrawFrom = InputNumberCheck(userAccounts) - 1; //From which account the money is being withdrawn from
+                Console.WriteLine("How much money do you want to withdraw?: ");
+                while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case a "decimal"
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
+                if (amountMoney > 0)
+                {
+                    withdrawelOkay = true;
+                }
+                else
+                {
+                    Console.WriteLine("The Money you withdraw can not be lower or equal to 0");
+                }
+            } while (!withdrawelOkay);
+            
+            withdrawelOkay = false;
+            
+            do
+            {
+                Console.WriteLine("From which account do you want to withdraw money from?: ");
+                while (!int.TryParse(Console.ReadLine(), out withdrawFrom)) //From which account the money is being withdrawn from
+                {
+                    Console.WriteLine("Please input a Number: ");
+                }
+                if (withdrawFrom > 0 && withdrawFrom <= 3)
+                {
+                    withdrawelOkay = true;
+                }
+                else
+                {
+                    Console.WriteLine("Please input a number between 1 and 3");
+                }
+            } while (!withdrawelOkay);
 
             Console.WriteLine("Input Password to proceed with the withdrawel: ");
             string userInputPassword = Console.ReadLine(); //Asks the user for their credentials to validate the withdrawel
@@ -274,7 +347,7 @@ namespace InternetBank
 
             transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney); //Tries to withdraw money from the specified account
 
-            do// If it fails I ask the user if they want to try again
+            do //If it fails I ask the user if they want to try again
             {
                 if (!transferCompleted)
                 {
@@ -296,6 +369,6 @@ namespace InternetBank
                 }
             } while (userInputTryAgain);
         return transferCompleted;
-        }
+        } 
     }
 }
