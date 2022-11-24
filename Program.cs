@@ -175,147 +175,161 @@ namespace InternetBank
         }
         public static void MakeATransaction(BankUser accountOwner, BankAccount[] userAccounts)
         {
-            bool failedTransfer;
+            string failedTransfer;
             bool withdrawelOkay = false;
             decimal amountMoney;
             int transferTo;
             int transferFrom;
-            
-            //Transaction
-            //----------------------------------------|
-            AccountsBalance(accountOwner, userAccounts, userAccounts.Length); //Calls on the method AccountsBalance() with the index to show the user their options
 
             do
             {
-                Console.WriteLine("How much money do you want to transfer?: ");
-                while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case a "decimal"
-                {
-                    Console.WriteLine("Please input a Number: ");
-                }
-                if (amountMoney > 0)
-                {
-                    withdrawelOkay = true;
-                }
-                else
-                {
-                    Console.WriteLine("The Money you transfer can not be lower or equal to 0");
-                }
-            } while (!withdrawelOkay);
+                //Transaction
+                //----------------------------------------|
+                AccountsBalance(accountOwner, userAccounts, userAccounts.Length); //Calls on the method AccountsBalance() with the index to show the user their options
 
-            do
+                do
+                {
+                    Console.WriteLine("How much money do you want to transfer?: ");
+                    while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case a "decimal"
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+                    if (amountMoney > 0)
+                    {
+                        withdrawelOkay = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The Money you transfer can not be lower or equal to 0");
+                    }
+                } while (!withdrawelOkay);
+
+                do
+                {
+                    Console.WriteLine("From which account do you want to transfer money from?: ");
+                    while (!int.TryParse(Console.ReadLine(), out transferFrom)) //From which account the money is being withdrawn from
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+                    if (transferFrom > 0 && transferFrom <= 3)
+                    {
+                        withdrawelOkay = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please input a number between 1 and 3");
+                    }
+                } while (!withdrawelOkay); //From which account the money is being transferred from
+
+                do
+                {
+                    Console.WriteLine("From which account do you want to transfer money to?: ");
+                    while (!int.TryParse(Console.ReadLine(), out transferTo)) //From which account the money is being withdrawn from
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+                    if (transferTo > 0 && transferTo <= 3)
+                    {
+                        withdrawelOkay = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please input a number between 1 and 3");
+                    }
+                } while (!withdrawelOkay); //To which account the money is being transferred to
+
+                failedTransfer = FailedTransaction(userAccounts, transferFrom, amountMoney); //Checks whether or not he transfer is possible: If the transfer is possible, it withdraws the money from the giving account and returns a bool  
+            } while (failedTransfer == "TRYAGAIN");
+
+            if (failedTransfer == "WORKED") //Checks if the transfer failed
             {
-                Console.WriteLine("From which account do you want to transfer money from?: ");
-                while (!int.TryParse(Console.ReadLine(), out transferFrom)) //From which account the money is being withdrawn from
-                {
-                    Console.WriteLine("Please input a Number: ");
-                }
-                if (transferFrom > 0 && transferFrom <= 3)
-                {
-                    withdrawelOkay = true;
-                }
-                else
-                {
-                    Console.WriteLine("Please input a number between 1 and 3");
-                }
-            } while (!withdrawelOkay); //From which account the money is being transferred from
-
-            do
-            {
-                Console.WriteLine("From which account do you want to transfer money to?: ");
-                while (!int.TryParse(Console.ReadLine(), out transferTo)) //From which account the money is being withdrawn from
-                {
-                    Console.WriteLine("Please input a Number: ");
-                }
-                if (transferTo > 0 && transferTo <= 3)
-                {
-                    withdrawelOkay = true;
-                }
-                else
-                {
-                    Console.WriteLine("Please input a number between 1 and 3");
-                }
-            } while (!withdrawelOkay); //To which account the money is being transferred to
-
-            failedTransfer = FailedTransaction(userAccounts, transferFrom, amountMoney); //Checks whether or not he transfer is possible: If the transfer is possible, it withdraws the money from the giving account and returns a bool 
-
-            if (failedTransfer) //Checks if the transfer failed
-            {
-                userAccounts[transferTo].MakeADeposit(amountMoney); //Makes the deposit
+                userAccounts[transferTo - 1].MakeADeposit(amountMoney); //Makes the deposit
 
                 AccountsBalance(accountOwner, userAccounts, 0); //Shows the user, their accounts again
             }
-            else
+            else if(failedTransfer == "FAILED")
             {
-                Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom].Balance);
+                Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", transferFrom, userAccounts[transferFrom - 1].Balance);
             }
         }
         public static void WithdrawBalance(BankUser accountOwner, BankAccount[] userAccounts)
         {
-            bool withdrawelCompleted;
-            decimal amountMoney;
-            int withdrawFrom;
-            bool withdrawelOkay = false;
-
+            bool withdrawelTryagain = false;
             //Withdrawel
             //----------------------------------------|
-            AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
-
             do
             {
-                Console.WriteLine("How much money do you want to withdraw?: ");
-                while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case a "decimal"
+                string withdrawelCompleted;
+                withdrawelTryagain = false;
+                decimal amountMoney;
+                int withdrawFrom;
+                bool withdrawelOkay = false;
+
+                AccountsBalance(accountOwner, userAccounts, userAccounts.Length);
+
+                do
                 {
-                    Console.WriteLine("Please input a Number: ");
-                }
-                if (amountMoney > 0)
+                    Console.WriteLine("How much money do you want to withdraw?: ");
+                    while (!decimal.TryParse(Console.ReadLine(), out amountMoney)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case a "decimal"
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+                    if (amountMoney > 0)
+                    {
+                        withdrawelOkay = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("The Money you withdraw can not be lower or equal to 0");
+                    }
+                } while (!withdrawelOkay);
+
+                withdrawelOkay = false;
+
+                do
                 {
-                    withdrawelOkay = true;
+                    Console.WriteLine("From which account do you want to withdraw money from?: ");
+                    while (!int.TryParse(Console.ReadLine(), out withdrawFrom)) //From which account the money is being withdrawn from
+                    {
+                        Console.WriteLine("Please input a Number: ");
+                    }
+                    if (withdrawFrom > 0 && withdrawFrom <= 3)
+                    {
+                        withdrawelOkay = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please input a number between 1 and 3");
+                    }
+                } while (!withdrawelOkay);
+
+                Console.WriteLine("Input Password to proceed with the withdrawel: ");
+                string userInputPassword = Console.ReadLine(); //Asks the user for their credentials to validate the withdrawel
+
+                if (userInputPassword == accountOwner.Password) //Checks if the password is valid
+                {
+                    withdrawelCompleted = FailedTransaction(userAccounts, withdrawFrom, amountMoney); //Tries to withdraw the money and returns a bool for if it worked
+
+                    if (withdrawelCompleted == "WORKED")
+                    {
+                        AccountsBalance(accountOwner, userAccounts, 0); //If it worked, we write the balance sheet to the user
+                        return;
+                    }
+                    else if (withdrawelCompleted == "FAILED")
+                    {
+                        Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", withdrawFrom, userAccounts[withdrawFrom - 1].Balance);
+                        return;
+                    }
+                    else if (withdrawelCompleted == "TRYAGAIN")
+                    {
+                        withdrawelTryagain = true;
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("The Money you withdraw can not be lower or equal to 0");
-                }
-            } while (!withdrawelOkay);
-            
-            withdrawelOkay = false;
-            
-            do
-            {
-                Console.WriteLine("From which account do you want to withdraw money from?: ");
-                while (!int.TryParse(Console.ReadLine(), out withdrawFrom)) //From which account the money is being withdrawn from
-                {
-                    Console.WriteLine("Please input a Number: ");
-                }
-                if (withdrawFrom > 0 && withdrawFrom <= 3)
-                {
-                    withdrawelOkay = true;
-                }
-                else
-                {
-                    Console.WriteLine("Please input a number between 1 and 3");
-                }
-            } while (!withdrawelOkay);
-
-            Console.WriteLine("Input Password to proceed with the withdrawel: ");
-            string userInputPassword = Console.ReadLine(); //Asks the user for their credentials to validate the withdrawel
-
-            if (userInputPassword == accountOwner.Password) //Checks if the password is valid
-            {
-                withdrawelCompleted = FailedTransaction(userAccounts, withdrawFrom, amountMoney); //Tries to withdraw the money and returns a bool for if it worked
-
-                if (withdrawelCompleted)
-                {
-                    AccountsBalance(accountOwner, userAccounts, 0); //If it worked, we write the balance sheet to the user
-                }
-                else
-                {
-                    Console.WriteLine("Not enough money in Account( {0} );\tMoney in Account( {0} ) - {1}", withdrawFrom, userAccounts[withdrawFrom].Balance);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Incorrect Password: Withdrawel was cancelled");
-            }
+                    Console.WriteLine("Incorrect Password: Withdrawel was cancelled");
+                } 
+            } while (withdrawelTryagain);
         }
         public static int InputNumberCheck(BankAccount[] userAccounts)
         {
@@ -339,36 +353,38 @@ namespace InternetBank
 
             return transfer;
         }
-        public static bool FailedTransaction(BankAccount[] userAccounts, int transferFrom, decimal amountMoney)
+        public static string FailedTransaction(BankAccount[] userAccounts, int transferFrom, decimal amountMoney)
         {
             bool transferCompleted;
             bool userInputTryAgain = false;
             char userInputYesOrNo;
 
-            transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney); //Tries to withdraw money from the specified account
+            
+            transferCompleted = userAccounts[transferFrom - 1].MakeAWithdrawel(amountMoney); //Tries to withdraw money from the specified account
 
-            do //If it fails I ask the user if they want to try again
+            if (!transferCompleted)
             {
-                if (!transferCompleted)
+                Console.WriteLine("Do you want to try again? Yes - y, No - n: ");
+
+                while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "char"
                 {
-                    Console.WriteLine("Do you want to try again? Yes - y, No - n: ");
+                    Console.WriteLine("Please input 'y' for Yes or 'n' for No: ");
+                }
 
-                    while (!char.TryParse(Console.ReadLine(), out userInputYesOrNo)) //Tries to parse the user input, and if it fails it tries again until it gets a valid answer, in this case an "char"
-                    {
-                        Console.WriteLine("Please input 'y' for Yes or 'n' for No: ");
-                    }
-
+                do
+                {
                     switch (Char.ToLower(userInputYesOrNo)) //Checks the user input
                     {
-                        case 'y': userInputTryAgain = true; break;
+                        case 'y': return "TRYAGAIN";
 
-                        case 'n': userInputTryAgain = false; break;
+                        case 'n': return "FAILED";
 
                         default: Console.WriteLine("Please input 'y' for Yes or 'n' for No: "); userInputTryAgain = true; break;
-                    }
-                }
-            } while (userInputTryAgain);
-        return transferCompleted;
+                    } 
+                } while (userInputTryAgain);
+            }
+            
+        return "WORKED";
         } 
     }
 }
