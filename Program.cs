@@ -240,7 +240,7 @@ namespace InternetBank
 
             if (failedTransfer) //Checks if the transfer failed
             {
-                userAccounts[transferTo].MakeADeposit(amountMoney); //Makes the deposit
+                userAccounts[transferTo - 1].MakeADeposit(amountMoney); //Makes the deposit
 
                 AccountsBalance(accountOwner, userAccounts, 0); //Shows the user, their accounts again
             }
@@ -345,7 +345,7 @@ namespace InternetBank
             bool userInputTryAgain = false;
             char userInputYesOrNo;
 
-            transferCompleted = userAccounts[transferFrom].MakeAWithdrawel(amountMoney); //Tries to withdraw money from the specified account
+            transferCompleted = userAccounts[transferFrom - 1].MakeAWithdrawel(amountMoney); //Tries to withdraw money from the specified account
 
             do //If it fails I ask the user if they want to try again
             {
